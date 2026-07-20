@@ -1,148 +1,216 @@
-# three-tier-eks-iac
+# 🚀 Three-Tier Web Application Deployment on AWS EKS
 
-# Prerequisite 
+A production-style Three-Tier Web Application deployed on **Amazon Elastic Kubernetes Service (EKS)** using **Terraform**, **Kubernetes**, **Docker**, **Helm**, **MongoDB**, and the **AWS Load Balancer Controller**.
 
-**Install Kubectl**
-https://kubernetes.io/docs/tasks/tools/
+This project demonstrates how to provision cloud infrastructure using Infrastructure as Code (Terraform), deploy containerized applications to Kubernetes, expose them using an AWS Application Load Balancer (ALB), and connect frontend, backend, and database services within a scalable Kubernetes environment.
 
+---
 
-**Install Helm**
-https://helm.sh/docs/intro/install/
+# 📌 Project Overview
 
-```
-helm repo update
-```
+This project deploys a complete Three-Tier Web Application on Amazon EKS.
 
-**Install/update latest AWS CLI:** (make sure install v2 only)
-https://aws.amazon.com/cli/
+The application consists of:
 
-#update the Kubernetes context
-aws eks update-kubeconfig --name my-eks-cluster --region us-west-2
+- React Frontend
+- Node.js Backend REST API
+- MongoDB Database
+- Kubernetes Deployments
+- Kubernetes Services
+- Kubernetes Ingress
+- AWS Application Load Balancer (ALB)
+- Infrastructure provisioned using Terraform
 
-# verify access:
-```
-kubectl auth can-i "*" "*"
-kubectl get nodes
-```
+The project follows modern DevOps practices including:
 
-# Verify autoscaler running:
-```
-kubectl get pods -n kube-system
-```
+- Infrastructure as Code (IaC)
+- Containerization
+- Kubernetes Orchestration
+- Cloud Native Deployment
+- Scalable Microservice Architecture
 
-# Check Autoscaler logs
-```
-kubectl logs -f \
-  -n kube-system \
-  -l app=cluster-autoscaler
-```
+---
 
-# Check load balancer logs
-```
-kubectl logs -f -n kube-system \
-  -l app.kubernetes.io/name=aws-load-balancer-controller
-```
+# 🏗️ Three-Tier Architecture
 
-<!-- aws eks update-kubeconfig \
-  --name my-eks \
-  --region us-west-2 \
-  --profile eks-admin -->
-
-
-# Buid Docker image :
-**For Mac:**
+The application follows a standard Three-Tier Architecture.
 
 ```
-export DOCKER_CLI_EXPERIMENTAL=enabled
-aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/w8u5e4v2
+                User
+                  │
+                  ▼
+     AWS Application Load Balancer
+                  │
+                  ▼
+      Kubernetes Ingress Controller
+                  │
+        ┌─────────┴─────────┐
+        │                   │
+        ▼                   ▼
+ Frontend Service      Backend Service
+        │                   │
+        ▼                   ▼
+  React Frontend      Node.js API
+                            │
+                            ▼
+                    MongoDB Service
+                            │
+                            ▼
+                        MongoDB
 ```
 
-Buid Front End :
+All components run inside Kubernetes Pods and communicate internally through Kubernetes Services.
+
+---
+
+# 🛠️ Technology Stack
+
+| Category | Technology |
+|----------|------------|
+| Cloud Platform | AWS |
+| Containerization | Docker |
+| Orchestration | Kubernetes (Amazon EKS) |
+| Infrastructure as Code | Terraform |
+| Package Manager | Helm |
+| Database | MongoDB |
+| Ingress | AWS Load Balancer Controller |
+| Load Balancer | AWS Application Load Balancer |
+| Version Control | Git & GitHub |
+
+---
+
+# ✨ Features
+
+- Deploy Amazon EKS Cluster using Terraform
+- Deploy React Frontend
+- Deploy Node.js Backend API
+- Deploy MongoDB Database
+- Kubernetes Deployments & Services
+- Kubernetes Ingress Resource
+- AWS Application Load Balancer Integration
+- Internal Service-to-Service Communication
+- Scalable Containerized Architecture
+- Infrastructure as Code (IaC)
+
+---
+
+# 📂 Project Structure
 
 ```
-docker buildx build --platform linux/amd64 -t workshop-frontend:v1 . 
-docker tag workshop-frontend:v1 public.ecr.aws/w8u5e4v2/workshop-frontend:v1
-docker push public.ecr.aws/w8u5e4v2/workshop-frontend:v1
+three-tier-web-app-eks
+│
+├── app/
+│   ├── frontend/
+│   ├── backend/
+│   └── mongodb/
+│
+├── k8s_manifests/
+│   ├── frontend-deployment.yaml
+│   ├── api-deployment.yaml
+│   ├── mongodb-deployment.yaml
+│   ├── services.yaml
+│   └── ingress.yaml
+│
+├── terraform/
+│   ├── provider.tf
+│   ├── vpc.tf
+│   ├── eks.tf
+│   ├── iam.tf
+│   ├── monitoring.tf
+│   └── variables.tf
+│
+└── README.md
 ```
 
+---
 
-Buid Back End :
-
-```
-docker buildx build --platform linux/amd64 -t workshop-backend:v1 . 
-docker tag workshop-backend:v1 public.ecr.aws/w8u5e4v2/workshop-backend:v1
-docker push public.ecr.aws/w8u5e4v2/workshop-backend:v1
-```
-
-**For Linux/Windows:**
-
-Buid Front End :
+# 🚀 Deployment Workflow
 
 ```
-docker build -t workshop-frontend:v1 . 
-docker tag workshop-frontend:v1 public.ecr.aws/w8u5e4v2/workshop-frontend:v1
-docker push public.ecr.aws/w8u5e4v2/workshop-frontend:v1
+Terraform
+     │
+     ▼
+Creates AWS Infrastructure
+     │
+     ▼
+Amazon EKS Cluster
+     │
+     ▼
+Deploy Kubernetes Manifests
+     │
+     ▼
+Pods & Services Created
+     │
+     ▼
+Ingress Controller
+     │
+     ▼
+AWS Application Load Balancer
+     │
+     ▼
+Access Application
 ```
 
+---
 
-Buid Back End :
+# ☁️ AWS Services Used
 
-```
-docker build -t workshop-backend:v1 . 
-docker tag workshop-backend:v1 public.ecr.aws/w8u5e4v2/workshop-backend:v1
-docker push public.ecr.aws/w8u5e4v2/workshop-backend:v1
-```
+- Amazon EKS
+- Amazon EC2
+- Amazon VPC
+- IAM
+- Application Load Balancer (ALB)
+- Elastic Container Registry (Optional)
 
+---
 
+# 📖 Kubernetes Resources
 
-**Create Namespace**
-```
-kubectl create ns workshop
+- Namespace
+- Deployment
+- Service
+- ReplicaSet
+- Ingress
+- Pods
 
-kubectl config set-context --current --namespace workshop
-```
+---
 
-# MongoDB Database Setup
+# 📸 Project Demonstration
 
-**To create MongoDB Resources**
-```
-cd k8s_manifests/mongo_v1
-kubectl apply -f secrets.yaml
-kubectl apply -f deploy.yaml
-kubectl apply -f service.yaml
-```
+The application provides:
 
-# Backend API Setup
+- Add a new task
+- Display task list
+- Delete tasks
+- Store task data in MongoDB
+- Frontend communicates with Backend API
+- Backend communicates with MongoDB
+- Public access through AWS Application Load Balancer
 
-Create NodeJs API deployment by running the following command:
-```
-kubectl apply -f backend-deployment.yaml
-kubectl apply -f backend-service.yaml
-``
+---
 
+# 🎯 Learning Outcomes
 
-**Frontend setup**
+Through this project, I learned:
 
-Create the Frontend  resource. In the terminal run the following command:
-```
-kubectl apply -f frontend-deployment.yaml
-kubectl apply -f frontend-service.yaml
-```
+- Provisioning infrastructure using Terraform
+- Deploying applications on Amazon EKS
+- Working with Kubernetes Deployments and Services
+- Configuring AWS Load Balancer Controller
+- Kubernetes Ingress Management
+- Containerizing applications with Docker
+- Managing cloud-native applications on AWS
 
-Finally create the final load balancer to allow internet traffic:
-```
-kubectl apply -f full_stack_lb.yaml
-```
+---
 
+# 👨‍💻 Author
 
-# Any issue with the pods ? check logs:
-kubectl logs -f POD_ID -f
+**Blessvin Shibu**
 
+DevOps & Cloud Enthusiast
 
-# Grafana setup 
-Username: admin
-Password: prom-operator
+GitHub: https://github.com/blessvin003
 
-Import Dashboard ID: 1860
+---
 
-Exlore more at: https://grafana.com/grafana/dashboards/
+# ⭐ If you found this project useful, consider giving it a star.
